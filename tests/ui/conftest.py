@@ -1,3 +1,4 @@
+import os
 import socket
 import subprocess
 import sys
@@ -8,7 +9,6 @@ import pytest
 import requests
 from playwright.sync_api import Page, sync_playwright
 
-import os
 
 def _find_free_port() -> int:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
