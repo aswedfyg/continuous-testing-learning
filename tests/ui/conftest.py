@@ -78,19 +78,30 @@ def base_url() -> Iterator[str]:
 def page(request: pytest.FixtureRequest) -> Iterator[Page]:
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
-        page = browser.new_page()
+        context = browser.new_context()
+        context.tracing.start(screenshots=True, snapshots=True, sources=True)
+        page = context.new_page()
 
         try:
             yield page
         finally:
             test_failed = request.node.rep_call.failed
+
             if test_failed:
                 screenshot_dir = Path("reports/screenshots")
                 screenshot_dir.mkdir(parents=True, exist_ok=True)
                 screenshot_path = screenshot_dir / f"{request.node.name}.png"
                 page.screenshot(path=str(screenshot_path), full_page=True)
 
+                trace_dir = Path("reports/traces")
+                trace_dir.mkdir(parents=True, exist_ok=True)
+                trace_path = trace_dir / f"{request.node.name}.zip"
+                context.tracing.stop(path=str(trace_path))
+            else:
+                context.tracing.stop()
+
             browser.close()
+
 
 
 
