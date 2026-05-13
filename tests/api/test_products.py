@@ -42,8 +42,21 @@ def test_add_unknown_product_to_cart_fails() -> None:
 
 
 
-def test_add_to_caryt_requires_positive_quantity() -> None:
+def test_add_to_cart_requires_positive_quantity() -> None:
     response = client.post("/cart",json={"product_id": 1, "quantity": 0})
 
 
     assert response.status_code == 422
+
+
+def test_get_cart_returns_added_items() -> None:
+    client.post("/cart", json={"product_id": 2, "quantity": 1})
+
+    response = client.get("/cart")
+
+    assert response.status_code == 200
+    assert {
+        "product_id": 2,
+        "name": "UI 自动化实战课",
+        "quantity": 1,
+    } in response.json()

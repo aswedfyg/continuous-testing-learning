@@ -17,6 +17,10 @@ PRODUCTS = [
 ]
 
 
+CART_ITEMS: list[dict[str,Any]] = []
+
+
+
 class LoginRequest(BaseModel):
     username: str
     password: str
@@ -206,12 +210,19 @@ def add_to_cart(payload: CartRequest) -> dict[str, Any]:
     if product is None:
         raise HTTPException(status_code=404, detail="Product not found")
 
+    cart_item = {
+        "product_id": payload.product_id,
+        "name": product["name"],
+        "quantity": payload.quantity,
+    }
+    CART_ITEMS.append(cart_item)
+
     return {
         "message": "Added to cart",
-        "item": {
-            "product_id": payload.product_id,
-            "name": product["name"],
-            "quantity": payload.quantity,
-        },
+        "item": cart_item,
     }
+
+@app.get("/cart")
+def get_cart() -> list[dict[str, Any]]:
+    return CART_ITEMS
 
