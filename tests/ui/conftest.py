@@ -8,6 +8,7 @@ import pytest
 import requests
 from playwright.sync_api import Page, sync_playwright
 
+import os
 
 def _find_free_port() -> int:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
@@ -17,6 +18,11 @@ def _find_free_port() -> int:
 
 @pytest.fixture(scope="session")
 def base_url() -> Iterator[str]:
+    configured_url = os.getenv("BASE_URL")
+    if configured_url:
+        yield configured_url
+        return
+    
     port = _find_free_port()
     url = f"http://127.0.0.1:{port}"
     process = subprocess.Popen(
