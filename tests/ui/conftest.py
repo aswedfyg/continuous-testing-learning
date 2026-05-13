@@ -4,6 +4,7 @@ import subprocess
 import sys
 import time
 from collections.abc import Iterator
+from pathlib import Path
 
 import pytest
 import requests
@@ -62,8 +63,19 @@ def base_url() -> Iterator[str]:
             process.kill()
 
 
+# @pytest.fixture
+# def page() -> Iterator[Page]:
+#     with sync_playwright() as playwright:
+#         browser = playwright.chromium.launch()
+#         page = browser.new_page()
+
+#         try:
+#             yield page
+#         finally:
+#             browser.close()
+
 @pytest.fixture
-def page() -> Iterator[Page]:
+def page(request: pytest.FixtureRequest) -> Iterator[Page]:
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
         page = browser.new_page()
@@ -71,4 +83,19 @@ def page() -> Iterator[Page]:
         try:
             yield page
         finally:
+            test_failed = request.node.rep_call.failed
+            if test_failed:
+                screenshot_dir = Path("reports/screenshots")
+                screenshot_dir.mkdir(parents=True, exist_ok=True)
+                screenshot_path = screenshot_dir / f"{request.node.name}.png"
+                page.screenshot(path=str(screenshot_path), full_page=True)
+
             browser.close()
+
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo[object]):
+    outcome = yield
+    report = outcome.get_result()
+    setattr(item, f"rep_{report.when}", report)
