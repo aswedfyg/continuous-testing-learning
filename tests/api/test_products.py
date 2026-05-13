@@ -39,3 +39,11 @@ def test_add_unknown_product_to_cart_fails() -> None:
 
     assert response.status_code == 404
     assert response.json()["detail"] == "Product not found"
+
+
+
+def test_add_to_caryt_requires_positive_quantity() -> None:
+    response = client.post("/cart",json={"product_id": 1, "quantity": 0})
+
+
+    assert response.status_code == 422
