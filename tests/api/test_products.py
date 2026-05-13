@@ -67,3 +67,19 @@ def test_get_cart_returns_added_items() -> None:
         "name": "UI 自动化实战课",
         "quantity": 1,
     } in response.json()
+
+
+@pytest.mark.parametrize(
+    ("payload", "expected_status"),
+    [
+        ({"product_id": 999, "quantity": 1}, 404),
+        ({"product_id": 1, "quantity": 0}, 422),
+        ({"product_id": 1, "quantity": -1}, 422),
+    ],
+)
+def test_add_to_cart_invalid_payloads(payload: dict[str, int], expected_status: int) -> None:
+    response = client.post("/cart", json=payload)
+
+    assert response.status_code == expected_status
+
+
