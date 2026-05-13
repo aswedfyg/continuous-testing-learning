@@ -1,11 +1,6 @@
-from fastapi.testclient import TestClient
-
-from app.main import app
-
-client = TestClient(app)
 
 
-def test_login_success() -> None:
+def test_login_success(client) -> None:
     response = client.post(
         "/login",
         json={"username": "admin", "password": "password123"},
@@ -16,7 +11,7 @@ def test_login_success() -> None:
     assert response.json()["username"] == "admin"
 
 
-def test_login_fails_with_wrong_password() -> None:
+def test_login_fails_with_wrong_password(client) -> None:
     response = client.post(
         "/login",
         json={"username": "admin", "password": "wrong-password"},
@@ -26,7 +21,7 @@ def test_login_fails_with_wrong_password() -> None:
     assert response.json()["detail"] == "Invalid username or password"
 
 
-def test_login_requires_password() -> None:
+def test_login_requires_password(client) -> None:
     response = client.post("/login", json={"username": "admin"})
 
     assert response.status_code == 422

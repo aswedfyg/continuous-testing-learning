@@ -1,18 +1,8 @@
+
 import pytest
-from fastapi.testclient import TestClient
-
-from app.main import CART_ITEMS, app
-
-client = TestClient(app)
 
 
-
-@pytest.fixture(autouse=True)
-def clear_cart() -> None:
-    CART_ITEMS.clear()
-
-
-def test_products_returns_expected_items() -> None:
+def test_products_returns_expected_items(client) -> None:
     response = client.get("/products")
 
     assert response.status_code == 200
@@ -27,7 +17,7 @@ def test_products_returns_expected_items() -> None:
         assert isinstance(product["price"], float)
 
 
-def test_add_product_to_cart_success() -> None:
+def test_add_product_to_cart_success(client) -> None:
     response = client.post("/cart", json={"product_id": 1, "quantity": 2})
 
     assert response.status_code == 200
@@ -41,7 +31,7 @@ def test_add_product_to_cart_success() -> None:
     }
 
 
-def test_add_unknown_product_to_cart_fails() -> None:
+def test_add_unknown_product_to_cart_fails(client) -> None:
     response = client.post("/cart", json={"product_id": 999, "quantity": 1})
 
     assert response.status_code == 404
@@ -49,14 +39,14 @@ def test_add_unknown_product_to_cart_fails() -> None:
 
 
 
-def test_add_to_cart_requires_positive_quantity() -> None:
+def test_add_to_cart_requires_positive_quantity(client) -> None:
     response = client.post("/cart",json={"product_id": 1, "quantity": 0})
 
 
     assert response.status_code == 422
 
 
-def test_get_cart_returns_added_items() -> None:
+def test_get_cart_returns_added_items(client) -> None:
     client.post("/cart", json={"product_id": 2, "quantity": 1})
 
     response = client.get("/cart")
@@ -77,7 +67,9 @@ def test_get_cart_returns_added_items() -> None:
         ({"product_id": 1, "quantity": -1}, 422),
     ],
 )
-def test_add_to_cart_invalid_payloads(payload: dict[str, int], expected_status: int) -> None:
+def test_add_to_cart_invalid_payloads(payload: dict[str, int], 
+                                      expected_status: int, 
+                                      client) -> None:
     response = client.post("/cart", json=payload)
 
     assert response.status_code == expected_status
