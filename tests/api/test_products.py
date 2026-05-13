@@ -1,8 +1,15 @@
+import pytest
 from fastapi.testclient import TestClient
 
-from app.main import app
+from app.main import CART_ITEMS, app
 
 client = TestClient(app)
+
+
+
+@pytest.fixture(autouse=True)
+def clear_cart() -> None:
+    CART_ITEMS.clear()
 
 
 def test_products_returns_expected_items() -> None:
