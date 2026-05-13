@@ -6,6 +6,7 @@ from collections.abc import Iterator
 
 import pytest
 import requests
+from playwright.sync_api import Page, sync_playwright
 
 
 def _find_free_port() -> int:
@@ -54,3 +55,14 @@ def base_url() -> Iterator[str]:
         except subprocess.TimeoutExpired:
             process.kill()
 
+
+@pytest.fixture
+def page() -> Iterator[Page]:
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+
+        try:
+            yield page
+        finally:
+            browser.close()
