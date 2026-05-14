@@ -1,5 +1,7 @@
+import pytest
 
 
+@pytest.mark.smoke
 def test_login_success(client) -> None:
     response = client.post(
         "/login",

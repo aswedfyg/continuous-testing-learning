@@ -1,7 +1,14 @@
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
-addopts = "-q"
+addopts = "-q" 
+markers = [
+    "smoke: core tests that verify the app is basically working",
+    "regression: broader tests for existing behavior",
+]
+
+
+
 
 [tool.ruff]
 line-length = 100
