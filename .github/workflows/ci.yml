@@ -3,6 +3,9 @@ name: CI
 on:
   push:
   pull_request:
+  schedule: 
+    - cron: "0 18 * * *"  # Run every day at 18:00 UTC,北京时间每天凌晨2点
+  workflow_dispatch:
 
 jobs:
   test:
@@ -26,12 +29,12 @@ jobs:
         run: python -m playwright install --with-deps chromium
 
       - name: Start test app
-        run: |
+        run: | # Start the app in the background and redirect output to a log file
           nohup python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 > uvicorn.log 2>&1 &
 
       - name: Wait for test app
         run: |
-          for i in {1..30}; do
+          for i in {1..30}; do  # Wait up to 30 seconds for the app to start
             if curl -f http://127.0.0.1:8000/health; then
               echo "App is ready"
               exit 0
@@ -49,7 +52,7 @@ jobs:
       - name: Run smoke tests
         run: pytest -m smoke --html=reports/smoke.html --self-contained-html
         env:
-          BASE_URL: http://127.0.0.1:8000
+          BASE_URL: http://127.0.0.1:8000  # Set the base URL for smoke tests
 
       - name: Run API tests
         run: pytest tests/api --html=reports/api.html --self-contained-html
