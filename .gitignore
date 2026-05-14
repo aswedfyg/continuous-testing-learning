@@ -5,4 +5,8 @@ __pycache__/
 reports/*.html
 playwright-report/
 test-results/
+
+reports/screenshots/
+reports/traces/
+
 *.pyc
