@@ -2,6 +2,7 @@
 import pytest
 
 
+@pytest.mark.regression
 def test_products_returns_expected_items(client) -> None:
     response = client.get("/products")
 
@@ -16,7 +17,7 @@ def test_products_returns_expected_items(client) -> None:
         assert isinstance(product["name"], str)
         assert isinstance(product["price"], float)
 
-
+@pytest.mark.regression
 def test_add_product_to_cart_success(client) -> None:
     response = client.post("/cart", json={"product_id": 1, "quantity": 2})
 
@@ -30,7 +31,7 @@ def test_add_product_to_cart_success(client) -> None:
         },
     }
 
-
+@pytest.mark.regression
 def test_add_unknown_product_to_cart_fails(client) -> None:
     response = client.post("/cart", json={"product_id": 999, "quantity": 1})
 
@@ -39,13 +40,14 @@ def test_add_unknown_product_to_cart_fails(client) -> None:
 
 
 
+@pytest.mark.regression
 def test_add_to_cart_requires_positive_quantity(client) -> None:
     response = client.post("/cart",json={"product_id": 1, "quantity": 0})
 
 
     assert response.status_code == 422
 
-
+@pytest.mark.regression
 def test_get_cart_returns_added_items(client) -> None:
     client.post("/cart", json={"product_id": 2, "quantity": 1})
 
@@ -59,6 +61,7 @@ def test_get_cart_returns_added_items(client) -> None:
     } in response.json()
 
 
+@pytest.mark.regression
 @pytest.mark.parametrize(
     ("payload", "expected_status"),
     [

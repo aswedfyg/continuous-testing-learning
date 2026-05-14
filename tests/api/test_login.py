@@ -12,7 +12,7 @@ def test_login_success(client) -> None:
     assert response.json()["token"] == "demo-token"
     assert response.json()["username"] == "admin"
 
-
+@pytest.mark.regression 
 def test_login_fails_with_wrong_password(client) -> None:
     response = client.post(
         "/login",
@@ -22,7 +22,7 @@ def test_login_fails_with_wrong_password(client) -> None:
     assert response.status_code == 401
     assert response.json()["detail"] == "Invalid username or password"
 
-
+@pytest.mark.regression
 def test_login_requires_password(client) -> None:
     response = client.post("/login", json={"username": "admin"})
 
