@@ -16,7 +16,7 @@ def test_user_can_login_and_see_products(page: Page, base_url: str) -> None:
     
        
 
-
+@pytest.mark.regression
 def test_user_sees_error_with_wrong_password(page: Page, base_url: str) -> None:
     login_page = LoginPage(page, base_url)
 
