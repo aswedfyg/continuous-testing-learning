@@ -1,6 +1,7 @@
 
 import pytest
 
+pytestmark = pytest.mark.api  # 标记整个模块为 API 测试
 
 @pytest.mark.regression
 def test_products_returns_expected_items(client) -> None:

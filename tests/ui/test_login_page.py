@@ -3,6 +3,7 @@ from playwright.sync_api import Page
 
 from tests.ui.login_page import LoginPage
 
+pytestmark = pytest.mark.ui  # 标记整个模块为 UI 测试
 
 @pytest.mark.smoke
 def test_user_can_login_and_see_products(page: Page, base_url: str) -> None:

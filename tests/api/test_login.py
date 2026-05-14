@@ -1,5 +1,6 @@
 import pytest
 
+pytestmark = pytest.mark.api  # 标记整个模块为 API 测试
 
 @pytest.mark.smoke
 def test_login_success(client) -> None:

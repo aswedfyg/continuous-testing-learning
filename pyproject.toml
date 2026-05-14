@@ -5,6 +5,8 @@ addopts = "-q"
 markers = [
     "smoke: core tests that verify the app is basically working",
     "regression: broader tests for existing behavior",
+    "api: API tests",
+    "ui: browser UI tests",
 ]
 
 
