@@ -3,7 +3,7 @@
 def test_login_success(client) -> None:
     response = client.post(
         "/login",
-        json={"username": "admin", "password": "password"},
+        json={"username": "admin", "password": "password123"},
     )
 
     assert response.status_code == 200
