@@ -47,6 +47,24 @@ python -m playwright install chromium
 uvicorn app.main:app --reload
 ```
 
+推荐使用脚本启动：
+
+```powershell
+.\scripts\run-app.ps1
+
+如果 PowerShell 禁止运行脚本，使用：
+powershell -ExecutionPolicy Bypass -File .\scripts\run-app.ps1
+```
+
+
+直接执行原始命令：
+
+```
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload
+```
+
+
+
 浏览器打开：
 
 ```text
